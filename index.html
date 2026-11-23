@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid Cloud Task Scheduling — ACO-SA vs DMFO-DE</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="presentation-deck">
+  <div id="deckProgress" class="deck-progress"></div>
+
+  <main id="presentationDeck" class="presentation-main">
+    <div>
+      <!-- Slide 1: Cover -->
+      <section id="slide-cover" class="presentation-slide presentation-cover">
+        <div class="presentation-window">
+          <div class="window-chrome"><span></span><span></span><span></span></div>
+          <div class="cover-content">
+            <div class="cover-group text-lime-300">SOKA • HYBRID CLOUD SCHEDULING</div>
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight">
+              ACO-SA vs DMFO-DE
+            </h1>
+            <p class="text-slate-300 max-w-2xl text-lg">
+              Perbandingan dua algoritma hybrid untuk penjadwalan tugas komputasi awan berbasis dataset Minggu 3.
+            </p>
+            <a href="#slide-toc" class="px-5 py-2.5 rounded-lg bg-lime-300 text-slate-950 font-semibold">
+              Mulai Presentasi
+            </a>
+          </div>
+          <div class="cover-index">GITHUB PAGES READY • MULTI-MODULE ARCHITECTURE</div>
+        </div>
+      </section>
+
+      <!-- Slide 2: Daftar Isi & Referensi -->
+      <section id="slide-toc" class="presentation-slide presentation-toc">
+        <div>
+          <div class="toc-heading">
+            <h2 class="text-3xl font-bold">Struktur Presentasi & Referensi</h2>
+            <p class="text-slate-400 text-sm">Klik kartu untuk lompat slide atau kartu jurnal untuk menandai referensi.</p>
+          </div>
+          <div class="toc-grid">
+            <a href="#slide-problem" class="toc-card"><span>03</span><strong>Formulasi & Data</strong><small>Metrik & Dataset W3</small><b>→</b></a>
+            <a href="#slide-lab" class="toc-card"><span>04</span><strong>Simulator Hybrid</strong><small>ACO-SA vs DMFO-DE</small><b>→</b></a>
+            <a href="#slide-benchmark" class="toc-card"><span>05</span><strong>Benchmark Batch</strong><small>Monte Carlo & CSV</small><b>→</b></a>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4 mt-6">
+            <a href="https://norma.ncirl.ie/8030/1/anoopkumar.pdf" target="_blank" rel="noopener" class="reference-card p-4 rounded-xl bg-slate-900 border border-slate-700">
+              <div class="text-xs text-lime-300 font-semibold">HYBRID 1 • ACO-SA</div>
+              <div class="font-bold mt-1">Ant Colony Optimization – Simulated Annealing</div>
+              <p class="text-xs text-slate-400 mt-1">Mensah et al. (2021); Kumar (2024) — eksplorasi feromon ACO + penerimaan suhu SA.</p>
+            </a>
+            <a href="https://rms.mohesr.gov.iq/publications/a8018081-0c3d-45c0-8b32-62c0989c0703" target="_blank" rel="noopener" class="reference-card p-4 rounded-xl bg-slate-900 border border-slate-700">
+              <div class="text-xs text-lime-300 font-semibold">HYBRID 2 • DMFO-DE</div>
+              <div class="font-bold mt-1">Discrete Moth-Flame Optimization – Differential Evolution</div>
+              <p class="text-xs text-slate-400 mt-1">Ahmed et al. (2021) — lintasan spiral MFO + operator mutasi/crossover DE.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 3: Formulasi -->
+      <section id="slide-problem" class="presentation-slide">
+        <div class="max-w-7xl space-y-6">
+          <h2 class="text-3xl font-bold">Formulasi Masalah & Dataset Minggu 3</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="explanation-card anim-stagger p-5 rounded-xl bg-surface border border-outline" tabindex="0">
+              <h3 class="font-bold text-primary">Makespan ($C_{\max}$)</h3>
+              <p class="text-sm text-tertiary mt-1">Waktu selesai maksimum di seluruh Virtual Machine (VM):</p>
+              <div class="mt-2">$$C_{\max} = \max_{j \in VM} \left( \sum_{i \in T_j} ET_{i,j} \right)$$</div>
+            </div>
+            <div class="explanation-card anim-stagger p-5 rounded-xl bg-surface border border-outline" tabindex="0">
+              <h3 class="font-bold text-primary">Degree of Imbalance ($DI$)</h3>
+              <p class="text-sm text-tertiary mt-1">Mengukur ketimpangan beban kerja antar VM:</p>
+              <div class="mt-2">$$DI = \frac{L_{\max} - L_{\min}}{L_{\text{avg}}}$$</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 4: Simulator Hybrid -->
+      <section id="slide-lab" class="presentation-slide">
+        <div class="max-w-7xl space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-2xl font-bold">Simulator Real-Time: ACO-SA vs DMFO-DE</h2>
+            <div class="flex items-center gap-2">
+              <button id="btnPlay" class="px-4 py-2 rounded-lg bg-primary font-semibold text-sm">Play</button>
+              <button id="btnStep" class="px-3 py-2 rounded-lg bg-surface border border-outline text-sm">Step</button>
+              <button id="btnReset" class="px-3 py-2 rounded-lg bg-surface border border-outline text-sm">Reset</button>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-4 gap-3 text-sm">
+            <label class="p-3 rounded-lg bg-surface border border-outline">
+              <span class="block text-xs text-tertiary">Algoritma Aktif</span>
+              <select id="selAlgo" class="mt-1 w-full bg-transparent font-semibold">
+                <option value="acosa">ACO-SA (Hybrid 1)</option>
+                <option value="dmfode">DMFO-DE (Hybrid 2)</option>
+              </select>
+            </label>
+            <label class="p-3 rounded-lg bg-surface border border-outline">
+              <span class="block text-xs text-tertiary">Populasi / Iterasi</span>
+              <div class="flex gap-2 mt-1">
+                <input id="rngPop" type="range" min="10" max="60" value="24" class="w-full" />
+                <span id="lblPop" class="font-mono text-xs">24</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-lg bg-surface border border-outline">
+              <span class="block text-xs text-tertiary">Max Iterasi</span>
+              <div class="flex gap-2 mt-1">
+                <input id="rngIter" type="range" min="20" max="150" value="60" class="w-full" />
+                <span id="lblIter" class="font-mono text-xs">60</span>
+              </div>
+            </label>
+            <div class="p-3 rounded-lg bg-surface border border-outline flex items-center justify-between">
+              <div>
+                <div class="text-xs text-tertiary">Best Makespan</div>
+                <div id="telBest" class="font-mono font-bold text-primary">--</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-tertiary">Iterasi</div>
+                <div id="telIter" class="font-mono font-bold">0 / 60</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-surface border border-outline">
+              <div class="text-xs text-tertiary mb-2 font-semibold">LIVE VM GANTT SCHEDULE</div>
+              <canvas id="ganttCanvas" width="600" height="240" class="w-full rounded-lg"></canvas>
+            </div>
+            <div class="p-4 rounded-xl bg-surface border border-outline">
+              <div class="text-xs text-tertiary mb-2 font-semibold">KOMPARASI KONVERGENSI (ACO-SA vs DMFO-DE)</div>
+              <canvas id="dualConvCanvas" width="600" height="240" class="w-full rounded-lg"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 5: Benchmark Batch -->
+      <section id="slide-benchmark" class="presentation-slide">
+        <div class="max-w-7xl space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-bold">Eksperimen Multi-Trial (ACO-SA vs DMFO-DE)</h2>
+              <p id="batchSummary" class="text-xs text-tertiary mt-1">Belum dijalankan.</p>
+            </div>
+            <div class="flex gap-2">
+              <button id="btnRunBatch" class="px-4 py-2 rounded-lg bg-primary font-semibold text-sm">Jalankan 10 Trials</button>
+              <button id="btnExportCsv" class="px-4 py-2 rounded-lg bg-surface border border-outline text-sm">Export CSV</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-outline">
+            <table class="w-full text-left text-sm">
+              <thead>
+                <tr>
+                  <th class="py-2.5 px-4">Trial</th>
+                  <th class="py-2.5 px-4">Seed</th>
+                  <th class="py-2.5 px-4">ACO-SA Makespan</th>
+                  <th class="py-2.5 px-4">DMFO-DE Makespan</th>
+                  <th class="py-2.5 px-4">Selisih (Δ)</th>
+                  <th class="py-2.5 px-4">Unggul</th>
+                </tr>
+              </thead>
+              <tbody id="batchTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <nav class="deck-controls">
+    <button id="prevSlide" class="deck-arrow"><span>←</span><span class="deck-arrow-label">Prev</span></button>
+    <div id="deckCounter" class="deck-counter">01 / 05</div>
+    <button id="nextSlide" class="deck-arrow"><span class="deck-arrow-label">Next</span><span>→</span></button>
+  </nav>
+
+  <script src="js/data/week3-dataset.js"></script>
+  <script src="js/algorithms/aco-sa.js"></script>
+  <script src="js/algorithms/dmfo-de.js"></script>
+  <script src="js/simulation/engine.js"></script>
+  <script src="js/visualization/gantt-canvas.js"></script>
+  <script src="js/visualization/charts.js"></script>
+  <script src="js/experiments/runner.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
