@@ -24,6 +24,11 @@
       if (prevBtn) prevBtn.disabled = active === 0;
       if (nextBtn) nextBtn.disabled = active === slides.length - 1;
       history.replaceState(null, '', `#${slides[active].id}`);
+
+      // Render skor KC saat slide skor aktif
+      if (slides[active].id === 'slide-score' && window.HybridCloud?.renderKcScore) {
+        window.HybridCloud.renderKcScore();
+      }
     }
 
     slides.forEach((s, i) => s.classList.toggle('is-active', i === active));

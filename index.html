@@ -43,9 +43,14 @@
             <p class="text-slate-400 text-sm">Klik kartu untuk lompat slide atau kartu jurnal untuk menandai referensi.</p>
           </div>
           <div class="toc-grid">
-            <a href="#slide-problem" class="toc-card"><span>03</span><strong>Formulasi & Data</strong><small>Metrik & Dataset W3</small><b>→</b></a>
-            <a href="#slide-lab" class="toc-card"><span>04</span><strong>Simulator Hybrid</strong><small>ACO-SA vs DMFO-DE</small><b>→</b></a>
-            <a href="#slide-benchmark" class="toc-card"><span>05</span><strong>Benchmark Batch</strong><small>Monte Carlo & CSV</small><b>→</b></a>
+            <a href="#slide-problem" class="toc-card"><span>03</span><strong>Formulasi &amp; Data</strong><small>Metrik &amp; Dataset W3</small><b>→</b></a>
+            <a href="#slide-kc1" class="toc-card"><span>KC1</span><strong>Knowledge Check 1</strong><small>ACO-SA &amp; Hybrid</small><b>→</b></a>
+            <a href="#slide-aco-walk" class="toc-card"><span>04</span><strong>Walkthrough ACO-SA</strong><small>5 langkah animasi</small><b>→</b></a>
+            <a href="#slide-lab" class="toc-card"><span>05</span><strong>Simulator Hybrid</strong><small>ACO-SA vs DMFO-DE</small><b>→</b></a>
+            <a href="#slide-dmfo-walk" class="toc-card"><span>06</span><strong>Walkthrough DMFO-DE</strong><small>5 langkah animasi</small><b>→</b></a>
+            <a href="#slide-kc2" class="toc-card"><span>KC2</span><strong>Knowledge Check 2</strong><small>DMFO-DE &amp; Flames</small><b>→</b></a>
+            <a href="#slide-benchmark" class="toc-card"><span>07</span><strong>Benchmark Batch</strong><small>Monte Carlo &amp; CSV</small><b>→</b></a>
+            <a href="#slide-score" class="toc-card"><span>08</span><strong>Skor KC</strong><small>Rekap jawaban</small><b>→</b></a>
           </div>
           <div class="grid md:grid-cols-2 gap-4 mt-6">
             <a href="https://norma.ncirl.ie/8030/1/anoopkumar.pdf" target="_blank" rel="noopener" class="reference-card p-4 rounded-xl bg-slate-900 border border-slate-700">
@@ -58,6 +63,37 @@
               <div class="font-bold mt-1">Discrete Moth-Flame Optimization – Differential Evolution</div>
               <p class="text-xs text-slate-400 mt-1">Ahmed et al. (2021) — lintasan spiral MFO + operator mutasi/crossover DE.</p>
             </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           Slide 2.5: Knowledge Check 1 — Konsep Hybrid Scheduling
+           ============================================================ -->
+      <section id="slide-kc1" class="presentation-slide">
+        <div class="max-w-7xl space-y-5">
+          <span class="kc-badge">KNOWLEDGE CHECK 1 / 2</span>
+          <div class="kc-quiz" data-kc="kc1" style="display:flex;flex-direction:column;gap:14px">
+            <div class="kc-question">Mengapa ACO-SA menggabungkan Simulated Annealing ke dalam Ant Colony Optimization?</div>
+            <div class="kc-opts">
+              <button class="kc-opt" data-ok="0"
+                data-fb="Jumlah semut tidak berkaitan dengan SA. SA dipakai untuk memperbaiki kualitas solusi tiap semut, bukan untuk menambah semut.">
+                <b>A</b> Supaya jumlah semut bisa diperbanyak secara adaptif
+              </button>
+              <button class="kc-opt" data-ok="1"
+                data-fb="Tepat! ACO cenderung terjebak di optimum lokal. SA menambahkan kemampuan menerima solusi yang sedikit lebih buruk sehingga pencarian bisa keluar dari jebakan tersebut.">
+                <b>B</b> SA membantu ACO keluar dari optimum lokal dengan menerima solusi yang sedikit lebih buruk
+              </button>
+              <button class="kc-opt" data-ok="0"
+                data-fb="SA bekerja pada ruang solusi yang sama dengan ACO, bukan pada feromon. SA memodifikasi solusi semut, bukan tabel feromon secara langsung.">
+                <b>C</b> SA menggantikan proses pembaruan feromon ACO agar lebih deterministik
+              </button>
+              <button class="kc-opt" data-ok="0"
+                data-fb="Sebaliknya — SA menambah overhead komputasi. Keuntungannya adalah kualitas solusi yang lebih baik, bukan kecepatan.">
+                <b>D</b> SA mempercepat konvergensi ACO dengan mengurangi jumlah iterasi
+              </button>
+            </div>
+            <div class="kc-fb">Pilih satu jawaban.</div>
           </div>
         </div>
       </section>
@@ -76,6 +112,51 @@
               <h3 class="font-bold text-primary">Degree of Imbalance ($DI$)</h3>
               <p class="text-sm text-tertiary mt-1">Mengukur ketimpangan beban kerja antar VM:</p>
               <div class="mt-2">$$DI = \frac{L_{\max} - L_{\min}}{L_{\text{avg}}}$$</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           Slide 3.5: Walkthrough Animasi ACO-SA (5 langkah)
+           ============================================================ -->
+      <section id="slide-aco-walk" class="presentation-slide">
+        <div class="max-w-7xl space-y-4">
+          <div>
+            <div class="text-xs text-tertiary font-semibold mb-1">CARA KERJA ALGORITMA</div>
+            <h2 class="text-2xl font-bold">ACO-SA — Langkah demi Langkah</h2>
+          </div>
+
+          <!-- Beat bar -->
+          <div class="beats-bar" id="aco-beat-bar" style="margin-bottom:4px"></div>
+
+          <div class="walkthrough-grid">
+            <!-- Panel kiri: flowchart node interaktif -->
+            <div class="walkthrough-panel" id="aco-walk-flow">
+              <h3>Alur Eksekusi</h3>
+              <div style="display:flex;flex-direction:column;gap:10px;padding-top:4px">
+                <div class="algo-node" data-node="init">🔧 Inisialisasi — τ = 1 untuk semua (task, VM)</div>
+                <div class="algo-arrow" data-arrow="init-build">↓</div>
+                <div class="algo-node" data-node="build">🐜 Bangun solusi semut — pilih VM via τ^α × η^β</div>
+                <div class="algo-arrow" data-arrow="build-sa">↓</div>
+                <div class="algo-node" data-node="sa">🌡 Refined SA — terima/tolak perubahan kecil via exp(−Δ/T)</div>
+                <div class="algo-arrow" data-arrow="sa-phero">↓</div>
+                <div class="algo-node" data-node="phero">💧 Evaporasi & deposit feromon — τ ← (1−ρ)τ + Δτ</div>
+                <div class="algo-arrow" data-arrow="phero-best">↓</div>
+                <div class="algo-node" data-node="best">🏆 Update solusi terbaik global → ulangi</div>
+              </div>
+            </div>
+
+            <!-- Panel kanan: log langkah -->
+            <div class="walkthrough-panel">
+              <h3 id="aco-step-title">Langkah 1: Inisialisasi</h3>
+              <div class="step-log" id="aco-step-log">
+                <div class="last">Feromon awal τ = 1.0 untuk semua pasangan (task, VM)</div>
+                <div>Populasi semut siap di-spawn</div>
+              </div>
+              <div style="margin-top:auto;font-size:0.82rem;color:var(--text-muted);font-family:ui-monospace,monospace;border-top:1px solid rgba(148,163,184,.15);padding-top:10px">
+                Tekan → atau klik nomor langkah di atas untuk maju
+              </div>
             </div>
           </div>
         </div>
@@ -140,6 +221,82 @@
         </div>
       </section>
 
+      <!-- ============================================================
+           Slide 4.5: Walkthrough Animasi DMFO-DE (5 langkah)
+           ============================================================ -->
+      <section id="slide-dmfo-walk" class="presentation-slide">
+        <div class="max-w-7xl space-y-4">
+          <div>
+            <div class="text-xs text-tertiary font-semibold mb-1">CARA KERJA ALGORITMA</div>
+            <h2 class="text-2xl font-bold">DMFO-DE — Langkah demi Langkah</h2>
+          </div>
+
+          <!-- Beat bar -->
+          <div class="beats-bar" id="dmfo-beat-bar" style="margin-bottom:4px"></div>
+
+          <div class="walkthrough-grid">
+            <!-- Flowchart kiri -->
+            <div class="walkthrough-panel" id="dmfo-walk-flow">
+              <h3>Alur Eksekusi</h3>
+              <div style="display:flex;flex-direction:column;gap:10px;padding-top:4px">
+                <div class="algo-node" data-node="init">🦋 Inisialisasi ngengat — populasi acak (task→VM)</div>
+                <div class="algo-arrow" data-arrow="init-flame">↓</div>
+                <div class="algo-node" data-node="flame">🔥 Hitung jumlah nyala api — berkurang seiring iterasi</div>
+                <div class="algo-arrow" data-arrow="flame-spiral">↓</div>
+                <div class="algo-node" data-node="spiral">🌀 Trajektori spiral MFO — gerak menuju api terdekat</div>
+                <div class="algo-arrow" data-arrow="spiral-de">↓</div>
+                <div class="algo-node" data-node="de">⚗ Mutasi & crossover DE — trial = best + F×(a−c)</div>
+                <div class="algo-arrow" data-arrow="de-select">↓</div>
+                <div class="algo-node" data-node="select">✅ Seleksi greedy — terima trial jika makespan lebih baik</div>
+              </div>
+            </div>
+
+            <!-- Log kanan -->
+            <div class="walkthrough-panel">
+              <h3 id="dmfo-step-title">Langkah 1: Inisialisasi populasi ngengat</h3>
+              <div class="step-log" id="dmfo-step-log">
+                <div class="last">Setiap ngengat = solusi acak (pemetaan task→VM)</div>
+                <div>Hitung fitness (makespan) tiap ngengat</div>
+              </div>
+              <div style="margin-top:auto;font-size:0.82rem;color:var(--text-muted);font-family:ui-monospace,monospace;border-top:1px solid rgba(148,163,184,.15);padding-top:10px">
+                Tekan → atau klik nomor langkah di atas untuk maju
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           Slide 4.7: Knowledge Check 2 — Perbandingan ACO-SA vs DMFO-DE
+           ============================================================ -->
+      <section id="slide-kc2" class="presentation-slide">
+        <div class="max-w-7xl space-y-5">
+          <span class="kc-badge">KNOWLEDGE CHECK 2 / 2</span>
+          <div class="kc-quiz" data-kc="kc2" style="display:flex;flex-direction:column;gap:14px">
+            <div class="kc-question">Dalam DMFO-DE, jumlah nyala api (flames) dikurangi setiap iterasi. Apa tujuan strategi ini?</div>
+            <div class="kc-opts">
+              <button class="kc-opt" data-ok="0"
+                data-fb="Mengurangi api tidak memengaruhi kecepatan komputasi secara langsung. Tujuannya adalah mengarahkan eksplorasi, bukan mempercepat kalkulasi.">
+                <b>A</b> Menghemat memori agar komputasi lebih cepat
+              </button>
+              <button class="kc-opt" data-ok="0"
+                data-fb="Sebaliknya — iterasi awal memiliki lebih banyak api untuk eksplorasi luas. Api berkurang justru untuk memperkuat eksploitasi di akhir.">
+                <b>B</b> Memperluas area eksplorasi di iterasi akhir
+              </button>
+              <button class="kc-opt" data-ok="1"
+                data-fb="Benar! Banyak api di awal → eksplorasi luas. Semakin sedikit api seiring iterasi → ngengat fokus pada wilayah solusi terbaik (eksploitasi), mirip dengan penurunan suhu pada Simulated Annealing.">
+                <b>C</b> Mendorong eksploitasi — ngengat semakin berfokus ke solusi terbaik seiring berjalannya iterasi
+              </button>
+              <button class="kc-opt" data-ok="0"
+                data-fb="Tidak. Jumlah ngengat (populasi) tetap konstan. Hanya jumlah api referensi yang berkurang.">
+                <b>D</b> Mengurangi jumlah ngengat agar populasi tidak terlalu besar
+              </button>
+            </div>
+            <div class="kc-fb">Pilih satu jawaban.</div>
+          </div>
+        </div>
+      </section>
+
       <!-- Slide 5: Benchmark Batch -->
       <section id="slide-benchmark" class="presentation-slide">
         <div class="max-w-7xl space-y-5">
@@ -171,6 +328,21 @@
           </div>
         </div>
       </section>
+
+      <!-- ============================================================
+           Slide 8: Rekap Skor Knowledge Check
+           ============================================================ -->
+      <section id="slide-score" class="presentation-slide">
+        <div class="max-w-7xl space-y-6" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh">
+          <span class="kc-badge">REKAP KNOWLEDGE CHECK</span>
+          <div class="kc-score-big" id="kc-score-display">–</div>
+          <p style="font-size:1.1rem;color:var(--text-muted);text-align:center">jawaban benar dari 2 soal</p>
+          <div id="kc-score-recap" style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:600px">
+            <!-- diisi oleh JS -->
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-muted);font-family:ui-monospace,monospace;margin-top:1rem">Tekan ← untuk kembali ke benchmark, atau mulai ulang presentasi dari slide pertama.</p>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -187,6 +359,8 @@
   <script src="js/visualization/gantt-canvas.js"></script>
   <script src="js/visualization/charts.js"></script>
   <script src="js/experiments/runner.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/animation.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/app.js"></script>
 </body>
